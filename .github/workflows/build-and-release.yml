@@ -1,0 +1,110 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+
+    - name: Build for Linux
+      run: cargo build --release --target x86_64-unknown-linux-gnu
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+    - name: Build for Linux ARM
+      run: cargo build --release --target armv7-unknown-linux-gnueabihf
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+    - name: Build for macOS
+      run: cargo build --release --target x86_64-apple-darwin
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+    - name: Build for macOS ARM
+      run: cargo build --release --target aarch64-apple-darwin
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+    - name: Build for Windows
+      run: cargo build --release --target x86_64-pc-windows-gnu
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+    - name: Build for Windows ARM
+      run: cargo build --release --target aarch64-pc-windows-msvc
+      env:
+        CARGO_TARGET_DIR: ${{ env.HOME }}/target
+
+    - name: Create release
+      uses: actions/create-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.TAG_NAME }}
+        draft: false
+        prerelease: false
+
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/x86_64-unknown-linux-gnu/release/echo-server-client
+        asset_name: echo-server-client_linux
+        asset_content_type: application/x-executable
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/armv7-unknown-linux-gnueabihf/release/echo-server-client
+        asset_name: echo-server-client_linux_arm
+        asset_content_type: application/x-executable
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/x86_64-apple-darwin/release/echo-server-client
+        asset_name: echo-server-client_macos
+        asset_content_type: application/x-executable
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/aarch64-apple-darwin/release/echo-server-client
+        asset_name: echo-server-client_macos_arm
+        asset_content_type: application/x-executable
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_HUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/x86_64-pc-windows-gnu/release/echo-server-client.exe
+        asset_name: echo-server-client_windows.exe
+        asset_content_type: application/x-executable
+    - name: Upload binaries
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.HOME }}/target/aarch64-pc-windows-msvc/release/echo-server-client.exe
+        asset_name: echo-server-client_windows_arm.exe
+        asset_content_type: application/x-executable
