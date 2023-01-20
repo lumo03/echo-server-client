@@ -22,7 +22,9 @@ fn main() {
 
                 match stream.read(&mut read) {
                     Ok(n) => {
-                        if n == 0 {}
+                        if n == 0 {
+                            break;
+                        }
                         let response = std::str::from_utf8(&read[0..n])
                             .unwrap()
                             .trim_end_matches('\n');
