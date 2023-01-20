@@ -28,8 +28,8 @@ jobs:
     - name: Build for Linux
       run: cargo build --release --target x86_64-unknown-linux-gnu
 
-    - name: Build for Linux ARM
-      run: cargo build --release --target armv7-unknown-linux-gnueabihf
+    #- name: Build for Linux ARM
+    #  run: cargo build --release --target armv7-unknown-linux-gnueabihf
 
     - name: Build for macOS
       run: cargo build --release --target x86_64-apple-darwin
@@ -63,15 +63,15 @@ jobs:
         asset_path: ${{ env.HOME }}/target/x86_64-unknown-linux-gnu/release/echo-server-client
         asset_name: echo-server-client_linux
         asset_content_type: application/x-executable
-    - name: Upload binaries
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ env.HOME }}/target/armv7-unknown-linux-gnueabihf/release/echo-server-client
-        asset_name: echo-server-client_linux_arm
-        asset_content_type: application/x-executable
+    #- name: Upload binaries
+     # uses: actions/upload-release-asset@v1
+     # env:
+     #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     # with:
+      #  upload_url: ${{ steps.create_release.outputs.upload_url }}
+       # asset_path: ${{ env.HOME }}/target/armv7-unknown-linux-gnueabihf/release/echo-server-client
+        #asset_name: echo-server-client_linux_arm
+        #asset_content_type: application/x-executable
     - name: Upload binaries
       uses: actions/upload-release-asset@v1
       env:
