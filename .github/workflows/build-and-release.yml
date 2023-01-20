@@ -18,10 +18,11 @@ jobs:
       with:
         toolchain: stable
         profile: minimal
-    - name: Install GCC or LLVM
-      uses: actions/setup-gcc@v1
-      # or 
-      # uses: actions/setup-llvm@v1
+    - name: Set up GCC
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
     - name: Install Linux ARM target
       run: rustup target add armv7-unknown-linux-gnueabihf
     - name: Build for Linux
